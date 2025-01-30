@@ -20,11 +20,21 @@
 
 namespace CudaTools {
 
+/**
+ * \class   BatchedExecutor
+ * \brief   Wrapper to call a function into load balanced blocks
+ *
+ * Batched Executor's execute function calls the given function with load balanced block sizes
+ */
 class BatchedExecutor {
 
     public:
 
-        BatchedExecutor() = delete;
+        /** Constructs a batched executor
+         * 
+         * \param[in] work_size the total number of "things" that need to be done
+         * \param[in] num_streams the number of streams that we want to distribute the work across
+         */
         BatchedExecutor(size_t work_size, size_t num_streams) : m_work_size(work_size), m_num_streams(num_streams) {}
 
         /** Executes the given function for each block of memory, number of blocks is the number of streams m_data_stream_count
@@ -50,10 +60,18 @@ class BatchedExecutor {
             }
         }
 
+        /** Gets the size of the larger batches
+         * 
+         * \return the larger batch size which is equal to the minor batch size if work_size%num_streams = 0, otherwise it is the minor batch size plus one
+         */
         size_t GetMajorBatchSize() {
             return m_work_size/m_num_streams + 1;
         }
 
+        /** Gets the minor batch size
+         * 
+         * \return the minor batch size which is equal to work_size/num_streams
+         */
         size_t GetMinorBatchSize() {
             return m_work_size/m_num_streams;
         }
@@ -61,23 +79,36 @@ class BatchedExecutor {
     private:
         size_t m_work_size;
         size_t m_num_streams;
-
 };
 
+/**
+ * \class   CudaStream
+ * \brief   CudaStream with RAII semantics
+ *
+ * creates and destroys a basic cuda stream using RAII principles
+ */
 class CudaStream {
     public:
+        /** Constructs a CUDA stream */
         CudaStream() {
             cudaStreamCreate(&m_stream);
         }
+
+        /** Destroys a CUDA stream */
         ~CudaStream() {
             cudaStreamDestroy(m_stream);
         }
 
+        /** synchronizes the CUDA stream  */
         void sync() {
             cudaStreamSynchronize(m_stream);
         }
 
-        operator cudaStream_t() {return m_stream;}
+        /** converter to convert the CudaStream to a cudaStream_t */
+        operator cudaStream_t() {
+            return m_stream;
+        }
+
     private:
         cudaStream_t m_stream;
 };

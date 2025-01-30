@@ -106,7 +106,10 @@ class CuBlasMatMult
         /* no copy assignment, use a smart pointer if you need this behavior*/
         CuBlasMatMult& operator=(const CuBlasMatMult&) = delete;
 
-    // OPERATIONS
+        /** Runs the matrix multiplication on the given cuda stream
+         * 
+         * \param[in] stream the cuda stream to run on
+         */
         void operator()(cudaStream_t stream = cudaStreamDefault) {
             // std::cout << "CudaTools cublas matmul performing multiply D = alpha*A*B+beta*C with:" << std::endl;
             // std::cout << "D: (" << m_D_matrix->InnerSize() << " x " << m_D_matrix->OuterSize() << ")" << std::endl;

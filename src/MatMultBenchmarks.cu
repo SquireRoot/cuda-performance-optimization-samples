@@ -1,17 +1,28 @@
+/**
+ * \file    MatMultBenchmarks.cu
+ * \brief   Contains benchmarking code for various matrix multiply kernels
+ * \author  Evan Newman
+ * \date    Jan 2025
+ */
+
+// SYSTEM INCLUDES
 #include <iostream>
 #include <memory>
 #include <limits>
 
+// DEPENDENCIES INCLUDES
 #include <cuda/std/chrono>
 #include <cuda_runtime.h>
-
 #include <nvbench/nvbench.cuh>
-#include "CudaTools/CudaTools.h"
 
 #define EIGEN_NO_CUDA
 #undef __CUDACC__
 #include <Eigen/Core>
 #define __CUDACC__
+
+// LOCAL INCLUDES 
+#include "CudaTools/CudaTools.h"
+
 
 template <typename T>
 class MatmulBenchEnv {
