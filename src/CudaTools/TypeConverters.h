@@ -16,10 +16,7 @@
 #include <cuda/std/ccomplex>
 #include <cublasLt.h>
 #include <cufft.h>
- 
-// PROJECT INCLUDES
 
-// LOCAL INCLUDES
 
 namespace CudaTools {   
 

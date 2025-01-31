@@ -68,6 +68,13 @@ class HostArray
         /** cant make copies of the object, use a smart pointer instead! I am lazy and didnt want to implement reference counting */
         HostArray& operator=(const HostArray&) = delete;
 
+        /** Array access operator
+         * 
+         * \param[in] idx the index to access
+         * 
+         * \return a reference to the value at the index
+         */
+        T& operator[](size_t idx) { return m_data_h[idx]; }
 
     // OPERATIONS
         /** Transfers the host array to a device array
@@ -201,6 +208,15 @@ class DeviceArray {
             cuErr(cudaFree(m_device_alloc_d));
         }
     
+    // OPERATORS
+        /** Array access operator
+         * 
+         * \param[in] idx the index to access
+         * 
+         * \return a reference to the value at the index
+         */
+        __device__ T& operator[](size_t idx) { return m_data_d[idx]; }
+
     // OPERATIONS
 
         /** Transfers the device array to the host array
