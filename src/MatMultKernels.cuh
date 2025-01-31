@@ -45,7 +45,8 @@ __global__ void MatMultBaseline(CudaTools::DeviceArray<T>* A_arr, CudaTools::Dev
 
 
 /** First pass at an optimized kernel for a basic matrix multiply of C=A*B. Assumes a continuous column major memory order,
- *  matrix size greater than 1024, and A, B, C, are all square matrices of the same size. 
+ *  matrix size greater than 1024, and A, B, C, are all square matrices of the same size. This kernel breaks up the matrices into
+ *  blocks and loads the blocks into shared memory before doing the matrix multiply.
  * 
  * \param[in] A the device array A
  * \param[in] B the device array B
@@ -94,6 +95,12 @@ __global__ void MatMult_1_kernel(CudaTools::DeviceArray<T>* A_arr, CudaTools::De
     *C = inner_product_val;
 }
 
+/** CPU wrapper function for the MatMult_1_kernel that takes care of setting launch parameters and argument checking
+ * 
+ * \param[in] A the device array A
+ * \param[in] B the device array B
+ * \param[in] C the device array C
+ */
 template <typename T, size_t N>
 void MatMult_1(CudaTools::DeviceArray<T>& A_arr, CudaTools::DeviceArray<T>& B_arr, CudaTools::DeviceArray<T>& C_arr, cudaStream_t stream = cudaStreamDefault) {
     constexpr size_t SHM_BLOCK_SIZE = 32;
